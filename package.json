@@ -1,5 +1,5 @@
 {
-  "name": "new-react-ssr",
+  "name": "blog-site",
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
@@ -22,7 +22,8 @@
     "ssr",
     "koa",
     "material-ui",
-    "mobx"
+    "mobx",
+    "blog-site"
   ],
   "devDependencies": {
     "babel-core": "^6.26.3",
