@@ -4,17 +4,40 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "webpack --config build/webpack.config.js",
+    "dev": "webpack-dev-server --config build/webpack.config.js"
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/fridaydream/blog-site.git"
   },
   "keywords": [],
-  "author": "",
+  "author": "https://daxierhao.com",
   "license": "ISC",
   "bugs": {
     "url": "https://github.com/fridaydream/blog-site/issues"
   },
-  "homepage": "https://github.com/fridaydream/blog-site#readme"
+  "homepage": "https://github.com/fridaydream/blog-site#readme",
+  "dependencies": {
+    "@types/node": "^13.11.0",
+    "@types/react": "^16.9.32",
+    "@types/react-dom": "^16.9.6",
+    "react": "^16.13.1",
+    "react-dom": "^16.13.1"
+  },
+  "devDependencies": {
+    "@babel/cli": "^7.8.4",
+    "@babel/core": "^7.9.0",
+    "@babel/preset-env": "^7.9.0",
+    "@babel/preset-react": "^7.9.4",
+    "@babel/preset-typescript": "^7.9.0",
+    "babel-loader": "^8.1.0",
+    "ts-loader": "^6.2.2",
+    "typescript": "^3.8.3",
+    "webpack": "^4.42.1",
+    "webpack-cli": "^3.3.11",
+    "webpack-dev-server": "^3.10.3",
+    "webpack-merge": "^4.2.2"
+  }
 }
