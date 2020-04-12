@@ -8,7 +8,6 @@ import Koa from 'koa'
 import koa2proxymiddleware from 'koa2-proxy-middleware'
 import bodyparser from 'koa-bodyparser'
 // @ts-ignore
-import koaStaticPlus from 'koa-static-plus'
 import serverConfig from '../../build/webpack.config.server'
 
 const getTemplate = () => {
@@ -41,7 +40,8 @@ serverCompiler.watch({}, (err, stats) => {
   const bundle = mfs.readFileSync(bundlePath, 'utf-8')
   // @ts-ignore
   const m = new Module()
-  m._compile(bundle, 'server-entry.tsx')
+  m._compile(bundle, 'server-entry.js')
+  // 下面这个m.exports.default和热更新有关联，改变了webpack public中/public =》 /public/之后需要加 default
   serverBundle = m.exports.default
 })
 
@@ -51,8 +51,8 @@ export default function (app) {
     targets: {
       // (.*) means anything
       '/public/(.*)': {
-          target: 'http://localhost:8888/',
-          changeOrigin: true,
+        target: 'http://localhost:8888/',
+        changeOrigin: true,
       },
     }
   }
@@ -63,10 +63,10 @@ export default function (app) {
   }))
   app.use(async (ctx: Koa.Context) => {
     // @ts-ignore
-    const appString = ReactDomServer.renderToString(serverBundle)
     let template  = await getTemplate()
-    console.log('template', template);
-    template = (template as string).replace('<!--app-->', appString)
+    // @ts-ignore
+    const appString = ReactDomServer.renderToString(serverBundle)
+    template = (template as string).replace('<app></app>', appString)
     ctx.body = template;
   });
 }

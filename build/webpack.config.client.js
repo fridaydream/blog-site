@@ -11,7 +11,7 @@ const config = {
   output: {
     filename: '[name].[hash:8].js',
     path: path.join(__dirname, '../dist'),
-    publicPath: '/public'
+    publicPath: '/public/'
   },
   resolve: {
     extensions: ['.ts', '.tsx', '.js']
@@ -22,7 +22,7 @@ const config = {
         test: /\.tsx?$/,
         loader: 'babel-loader',
         exclude: /node_modules/
-      }
+      },
     ]
   },
   plugins: [
@@ -34,6 +34,12 @@ const config = {
 
 console.log('isDev', isDev)
 if (isDev) {
+  config.entry = {
+    app: [
+      'react-hot-loader/patch',
+      path.join(__dirname, '../client/index.tsx')
+    ]
+  }
   config.mode = 'development'
   config.devServer = {
     host: '0.0.0.0',
@@ -50,7 +56,10 @@ if (isDev) {
   }
   config.plugins.push(
     new webpack.HotModuleReplacementPlugin()
-  )
+  );
+  config.resolve.alias = {
+    'react-dom': '@hot-loader/react-dom'
+  }
 }
 
 module.exports = config
