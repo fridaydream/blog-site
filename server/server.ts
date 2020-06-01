@@ -14,16 +14,16 @@ if (!isDev) {
   const serverEntry = require('../dist/server-entry').default
   
   let template = fs.readFileSync(path.join(__dirname, '../dist/index.html'), 'utf8')
+  app.use(koaStaticPlus(path.join(__dirname, '../dist'), {
+    pathPrefix: '/public/'  //路径前缀
+  }))
   app.use(async ctx => {
     const appString = ReactSSR.renderToString(serverEntry)
-    console.log(appString);
+    console.log('===', appString);
     console.log('template', template);
-    template = template.replace('<app></app>', appString)
-    ctx.body = template;
+    ctx.body = template.replace('<app></app>', appString);
   });
-  app.use(koaStaticPlus(path.join(__dirname, '../dist'), {
-    pathPrefix: '/public'  //路径前缀
-  }))
+  
 } else {
   const devStatic = require('./utils/dev-static').default
   devStatic(app)

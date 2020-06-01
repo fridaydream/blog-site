@@ -12,7 +12,7 @@
     "server:server": "cross-env NODE_ENV=production nodemon --watch 'server/**/*.ts' --exec 'ts-node' server/server.ts",
     "build": "npm run clear && npm run build:client && npm run build:server",
     "clear": "rimraf dist",
-    "start": "node server/server.js"
+    "start": "node server/server.ts"
   },
   "repository": {
     "type": "git",
@@ -52,6 +52,7 @@
     "@types/node": "^13.11.1",
     "@types/webpack": "^4.41.10",
     "@types/webpack-env": "^1.15.1",
+    "@typescript-eslint/parser": "^2.30.0",
     "babel-loader": "^8.1.0",
     "cross-env": "^7.0.2",
     "html-webpack-plugin": "^4.0.4",

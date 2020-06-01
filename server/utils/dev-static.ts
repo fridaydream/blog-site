@@ -63,7 +63,7 @@ export default function (app) {
   }))
   app.use(async (ctx: Koa.Context) => {
     // @ts-ignore
-    let template  = await getTemplate()
+    let template = await getTemplate()
     // @ts-ignore
     const appString = ReactDomServer.renderToString(serverBundle)
     template = (template as string).replace('<app></app>', appString)
