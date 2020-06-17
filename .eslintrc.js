@@ -1,10 +1,31 @@
 module.exports = {
-  parser: '@typescript-eslint/parser',
-  extends: [
-      'plugin:@typescript-eslint/recommended',
-      'react-app',
-      'plugin:prettier/recommended',
+  "env": {
+      "browser": true,
+      "es6": true
+  },
+  "extends": [
+    'eslint:recommended',
+    'airbnb', // 添加prettier
+    'prettier',
+    'plugin:react/recommended',
+    'plugin:@typescript-eslint/eslint-recommended',
   ],
-  plugins: ['@typescript-eslint', 'react'],
-  rules: {},
-};
+  "globals": {
+      "Atomics": "readonly",
+      "SharedArrayBuffer": "readonly"
+  },
+  "parser": "@typescript-eslint/parser",
+  "parserOptions": {
+      "ecmaFeatures": {
+          "jsx": true
+      },
+      "ecmaVersion": 2018,
+      "sourceType": "module"
+  },
+  "plugins": [
+      "react",
+      "@typescript-eslint"
+  ],
+  "rules": {
+  }
+}

@@ -1,38 +1,38 @@
 import axios from 'axios'
 import webpack from 'webpack'
 import MemoryFs from 'memory-fs'
-import React from 'react'
 import ReactDomServer from 'react-dom/server'
 import path from 'path'
-import Koa from 'koa'
 import koa2proxymiddleware from 'koa2-proxy-middleware'
 import bodyparser from 'koa-bodyparser'
+import Koa from 'koa'
 // @ts-ignore
 import serverConfig from '../../build/webpack.config.server'
 
 const getTemplate = () => {
   return new Promise((resolve, reject) => {
     axios.get('http://localhost:8888/public/index.html')
-    .then(res => {
-      resolve(res.data)
-    })
-    .catch(reject)
+      .then(res => {
+        resolve(res.data)
+      })
+      .catch(reject)
   })
 }
 
 const Module = module.constructor
-const mfs = new MemoryFs;
-// @ts-ignore
-const serverCompiler = webpack(serverConfig);
+const mfs = new MemoryFs()
+const serverCompiler = webpack(serverConfig)
 serverCompiler.outputFileSystem = mfs
-// @ts-ignore
-let serverBundle;
-// @ts-ignore
+let serverBundle:any
+
 serverCompiler.watch({}, (err, stats) => {
   if (err) throw err
+  // @ts-ignore
   stats = stats.toJson()
-  stats.errors.forEach((errmsg: string) => console.error(errmsg));
-  stats.warnings.forEach((warn: string) => console.warn(warn));
+  // @ts-ignore
+  stats.errors.forEach((errmsg: string) => console.error(errmsg))
+  // @ts-ignore
+  stats.warnings.forEach((warn: string) => console.warn(warn))
   const bundlePath = path.join(
     serverConfig.output.path,
     serverConfig.output.filename
@@ -40,24 +40,25 @@ serverCompiler.watch({}, (err, stats) => {
   const bundle = mfs.readFileSync(bundlePath, 'utf-8')
   // @ts-ignore
   const m = new Module()
+  // eslint-disable-next-line no-underscore-dangle
   m._compile(bundle, 'server-entry.js')
   // 下面这个m.exports.default和热更新有关联，改变了webpack public中/public =》 /public/之后需要加 default
   serverBundle = m.exports.default
 })
 
-// @ts-ignore
+// eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
 export default function (app) {
   const options = {
     targets: {
       // (.*) means anything
       '/public/(.*)': {
         target: 'http://localhost:8888/',
-        changeOrigin: true,
-      },
+        changeOrigin: true
+      }
     }
   }
   // @ts-ignore
-  app.use(koa2proxymiddleware(options));
+  app.use(koa2proxymiddleware(options))
   app.use(bodyparser({
     enableTypes: ['json', 'form', 'text']
   }))
@@ -67,6 +68,6 @@ export default function (app) {
     // @ts-ignore
     const appString = ReactDomServer.renderToString(serverBundle)
     template = (template as string).replace('<app></app>', appString)
-    ctx.body = template;
-  });
+    ctx.body = template
+  })
 }
