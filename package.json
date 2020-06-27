@@ -23,7 +23,7 @@
   "lint-staged": {
     "client/**/*.tsx": [
       "eslint -c .eslintrc.js --fix",
-      "prettier --write"
+      "git add"
     ]
   },
   "repository": {
