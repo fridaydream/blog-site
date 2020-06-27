@@ -47,7 +47,7 @@ serverCompiler.watch({}, (err, stats) => {
 })
 
 // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
-export default function (app) {
+export default function (app: Koa) {
   const options = {
     targets: {
       // (.*) means anything

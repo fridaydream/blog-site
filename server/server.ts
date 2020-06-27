@@ -1,6 +1,5 @@
-/* eslint-disable global-require */
-import Koa from 'koa'
 import ReactSSR from 'react-dom/server'
+import Koa from 'koa'
 import fs from 'fs'
 import path from 'path'
 

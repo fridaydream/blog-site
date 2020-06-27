@@ -1,31 +1,11 @@
 module.exports = {
-  "env": {
-      "browser": true,
-      "es6": true
+  extends: [require.resolve('@umijs/fabric/dist/eslint')],
+  globals: {
   },
-  "extends": [
-    'eslint:recommended',
-    'airbnb', // 添加prettier
-    'prettier',
-    'plugin:react/recommended',
-    'plugin:@typescript-eslint/eslint-recommended',
-  ],
-  "globals": {
-      "Atomics": "readonly",
-      "SharedArrayBuffer": "readonly"
+  rules: {
+    'no-restricted-syntax': 0,
+    'import/no-unresolved': 0,
+    camelcase: 0,
+    '@typescript-eslint/camelcase': 0,
   },
-  "parser": "@typescript-eslint/parser",
-  "parserOptions": {
-      "ecmaFeatures": {
-          "jsx": true
-      },
-      "ecmaVersion": 2018,
-      "sourceType": "module"
-  },
-  "plugins": [
-      "react",
-      "@typescript-eslint"
-  ],
-  "rules": {
-  }
-}
+};
