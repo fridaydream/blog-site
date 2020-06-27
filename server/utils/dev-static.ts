@@ -30,8 +30,11 @@ let serverBundle;
 // @ts-ignore
 serverCompiler.watch({}, (err, stats) => {
   if (err) throw err
+  // @ts-ignore
   stats = stats.toJson()
+  // @ts-ignore
   stats.errors.forEach((errmsg: string) => console.error(errmsg));
+  // @ts-ignore
   stats.warnings.forEach((warn: string) => console.warn(warn));
   const bundlePath = path.join(
     serverConfig.output.path,

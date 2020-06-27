@@ -12,7 +12,19 @@
     "server:server": "cross-env NODE_ENV=production nodemon --watch 'server/**/*.ts' --exec 'ts-node' server/server.ts",
     "build": "npm run clear && npm run build:client && npm run build:server",
     "clear": "rimraf dist",
-    "start": "node server/server.ts"
+    "start": "node server/server.ts",
+    "lint": "eslint src --fix --ext .ts,.tsx"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
+  },
+  "lint-staged": {
+    "*.{.ts,.tsx}": [
+      "eslint",
+      "git add"
+    ]
   },
   "repository": {
     "type": "git",
@@ -52,12 +64,23 @@
     "@types/node": "^13.11.1",
     "@types/webpack": "^4.41.10",
     "@types/webpack-env": "^1.15.1",
-    "@typescript-eslint/parser": "^2.30.0",
+    "@typescript-eslint/eslint-plugin": "^3.4.0",
+    "@typescript-eslint/parser": "^2.34.0",
+    "babel-eslint": "^10.1.0",
     "babel-loader": "^8.1.0",
     "cross-env": "^7.0.2",
+    "eslint": "^7.3.1",
+    "eslint-config-prettier": "^6.11.0",
+    "eslint-config-react-app": "^5.2.1",
+    "eslint-plugin-jsx-control-statements": "^2.2.1",
+    "eslint-plugin-prettier": "^3.1.4",
+    "eslint-plugin-react": "^7.20.0",
     "html-webpack-plugin": "^4.0.4",
+    "husky": "^4.2.5",
+    "lint-staged": "^10.2.11",
     "memory-fs": "^0.5.0",
     "nodemon": "^2.0.2",
+    "prettier": "^2.0.5",
     "react-hot-loader": "^4.8.3",
     "rimraf": "^3.0.2",
     "ts-loader": "^6.2.2",

@@ -4,12 +4,9 @@ import ReactDOM from 'react-dom'
 
 import App from './App'
 const root = document.getElementById('root')
-const renderMethod = module.hot ? ReactDOM.render : ReactDOM.hydrate;
+const renderMethod = module.hot ? ReactDOM.render : ReactDOM.hydrate
 const render = (Component: React.ComponentType) => {
-  renderMethod(
-    <Component />,
-    root
-  );
+  renderMethod(<Component />, root)
 }
 
 render(App)
