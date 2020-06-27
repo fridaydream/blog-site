@@ -22,7 +22,7 @@
   },
   "lint-staged": {
     "client/**/*.tsx": [
-      "eslint --fix",
+      "eslint -c .eslintrc.js --fix",
       "prettier --write"
     ]
   },
