@@ -13,7 +13,7 @@
     "build": "npm run clear && npm run build:client && npm run build:server",
     "clear": "rimraf dist",
     "start": "node server/server.ts",
-    "lint": "eslint client --fix --ext .ts,.tsx",
+    "lint": "eslint --ext .js,.jsx,.ts,.tsx",
     "lint-staged": "lint-staged"
   },
   "husky": {
