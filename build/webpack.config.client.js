@@ -1,9 +1,11 @@
 const path = require('path')
 const HTMLPlugin = require('html-webpack-plugin')
 const webpack = require('webpack')
+const webpackMerge = require('webpack-merge')
+const baseConfig = require('./webpack.base')
 const isDev = process.env.NODE_ENV === 'development'
 
-const config = {
+const config = webpackMerge(baseConfig, {
   mode: 'production',
   entry: {
     app: path.join(__dirname, '../client/index.tsx')
@@ -16,21 +18,12 @@ const config = {
   resolve: {
     extensions: ['.ts', '.tsx', '.js']
   },
-  module: {
-    rules: [
-      {
-        test: /\.tsx?$/,
-        loader: 'babel-loader',
-        exclude: /node_modules/
-      },
-    ]
-  },
   plugins: [
     new HTMLPlugin({
       template: path.join(__dirname, '../client/template.html'),
     })
   ]
-}
+})
 
 console.log('isDev', isDev)
 if (isDev) {
@@ -51,7 +44,7 @@ if (isDev) {
     },
     publicPath: '/public/',
     historyApiFallback: {
-      index: 'index.html'
+      index: '/public/index.html'
     }
   }
   config.plugins.push(

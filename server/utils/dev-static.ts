@@ -1,14 +1,29 @@
 import axios from 'axios'
 import webpack from 'webpack'
 import MemoryFs from 'memory-fs'
-import React from 'react'
-import ReactDomServer from 'react-dom/server'
 import path from 'path'
 import Koa from 'koa'
 import koa2proxymiddleware from 'koa2-proxy-middleware'
 import bodyparser from 'koa-bodyparser'
 // @ts-ignore
 import serverConfig from '../../build/webpack.config.server'
+import NativeModule from 'module'
+import vm from 'vm'
+import serverRender from './server-render'
+
+// (function(exports, require, module, __filename, __dirname) {...bundle code})
+const getModuleFromString = (bundle: string, filename: string) => {
+  const m = { exports: {} }
+  const wrapper = NativeModule.wrap(bundle)
+  const script = new vm.Script(wrapper, {
+    filename,
+    displayErrors: true
+  })
+  const result = script.runInThisContext()
+  result.call(m.exports, m.exports, require, m)
+  return m
+}
+
 
 const getTemplate = () => {
   return new Promise((resolve, reject) => {
@@ -20,15 +35,12 @@ const getTemplate = () => {
   })
 }
 
-const Module = module.constructor
 const mfs = new MemoryFs;
-// @ts-ignore
 const serverCompiler = webpack(serverConfig);
 serverCompiler.outputFileSystem = mfs
 // @ts-ignore
-let serverBundle;
-// @ts-ignore
-serverCompiler.watch({}, (err, stats) => {
+let serverBundle: React.FC;
+serverCompiler.watch({}, (err, stats: webpack.Stats) => {
   if (err) throw err
   // @ts-ignore
   stats = stats.toJson()
@@ -42,14 +54,13 @@ serverCompiler.watch({}, (err, stats) => {
   )
   const bundle = mfs.readFileSync(bundlePath, 'utf-8')
   // @ts-ignore
-  const m = new Module()
-  m._compile(bundle, 'server-entry.js')
+  const m = getModuleFromString(bundle, 'server-entry.js')
   // 下面这个m.exports.default和热更新有关联，改变了webpack public中/public =》 /public/之后需要加 default
-  serverBundle = m.exports.default
+  // @ts-ignore
+  serverBundle = m.exports
 })
 
-// @ts-ignore
-export default function (app) {
+export default function (app: Koa) {
   const options = {
     targets: {
       // (.*) means anything
@@ -59,17 +70,17 @@ export default function (app) {
       },
     }
   }
-  // @ts-ignore
   app.use(koa2proxymiddleware(options));
   app.use(bodyparser({
     enableTypes: ['json', 'form', 'text']
   }))
   app.use(async (ctx: Koa.Context) => {
-    // @ts-ignore
+    if (!serverBundle) {
+      ctx.body = 'waiting for compile, refresh later'
+      return
+    }
     let template = await getTemplate()
     // @ts-ignore
-    const appString = ReactDomServer.renderToString(serverBundle)
-    template = (template as string).replace('<app></app>', appString)
-    ctx.body = template;
+    serverRender(serverBundle, template, ctx)
   });
 }

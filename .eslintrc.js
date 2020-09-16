@@ -13,19 +13,24 @@ module.exports = {
   },
 
   plugins: ['@typescript-eslint', 'react'],
-  settings: {
-    react: {
-      pragma: 'React',
-      version: 'detect',
-    },
+  // settings: {
+  //   react: {
+  //     pragma: 'React',
+  //     version: 'detect',
+  //   },
+  // },
+  // // 配置解析器支持的语法
+  // parserOptions: {
+  //   ecmaVersion: 2019,
+  //   sourceType: 'module',
+  //   ecmaFeatures: {
+  //     jsx: true,
+  //   },
+  // },
+  rules: {
+    '@typescript-eslint/ban-types': [0],
+    '@typescript-eslint/explicit-module-boundary-types': [0],
+    'react/display-name': [0],
+    'prettier/prettier': [0],
   },
-  // 配置解析器支持的语法
-  parserOptions: {
-    ecmaVersion: 2019,
-    sourceType: 'module',
-    ecmaFeatures: {
-      jsx: true,
-    },
-  },
-  rules: {},
 }

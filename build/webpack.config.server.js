@@ -1,9 +1,13 @@
 const path = require('path')
-module.exports = {
+const webpackMerge = require('webpack-merge')
+const baseConfig = require('./webpack.base')
+
+module.exports = webpackMerge(baseConfig, {
   target: 'node',
   entry: {
     app: path.join(__dirname, '../client/server-entry.tsx')
   },
+  externals: Object.keys(require('../package.json').dependencies),
   output: {
     filename: 'server-entry.js',
     path: path.join(__dirname, '../dist'),
@@ -12,14 +16,5 @@ module.exports = {
   },
   resolve: {
     extensions: ['.ts', '.tsx', '.js']
-  },
-  module: {
-    rules: [
-      {
-        test: /\.tsx?$/,
-        loader: 'babel-loader',
-        exclude: /node_modules/
-      }
-    ]
   }
-}
+})
