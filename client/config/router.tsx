@@ -7,8 +7,8 @@ import User from '../pages/user/Index'
 
 export default () => (
   <>
-    <Route path="/" render={() => <Redirect to="/home" />} exact />
-    <Route path="/home" component={Home} />
+    <Route path="/" exact render={() => <Redirect to="/home" />} />
+    <Route path="/home" exact component={Home} />
     <Route path="/user" component={User} />
   </>
 )

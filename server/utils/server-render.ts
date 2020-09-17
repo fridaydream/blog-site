@@ -16,9 +16,8 @@ export default (bundle: Bundle, template: string, ctx: Koa.Context) => {
   // @ts-ignore
   const app = createApp(routerContext, ctx.url)
   const appString = ReactDomServer.renderToString(app)
-  setTimeout(() => {
-    console.log('routerContext.url', routerContext);
-  }, 2000)
+  console.log('appString', appString);
+  console.log('routerContext.url', routerContext);
   if (routerContext.url) {
     ctx.redirect(routerContext.url);
     return;
