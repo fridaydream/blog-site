@@ -2,3 +2,4 @@ server
 dist
 build
 client/template.html
+client/server.template.ejs

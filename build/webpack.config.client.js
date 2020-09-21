@@ -15,18 +15,20 @@ const config = webpackMerge(baseConfig, {
     path: path.join(__dirname, '../dist'),
     publicPath: '/public/'
   },
-  resolve: {
-    extensions: ['.ts', '.tsx', '.js']
-  },
   plugins: [
     new HTMLPlugin({
       template: path.join(__dirname, '../client/template.html'),
+    }),
+    new HTMLPlugin({
+      template: '!!ejs-compiled-loader!' + path.join(__dirname, '../client/server.template.ejs'),
+      filename: 'server.ejs'
     })
   ]
 })
 
 console.log('isDev', isDev)
 if (isDev) {
+  config.devtool = '#cheap-module-eval-source-map'
   config.entry = {
     app: [
       'react-hot-loader/patch',
@@ -51,7 +53,11 @@ if (isDev) {
     new webpack.HotModuleReplacementPlugin()
   );
   config.resolve.alias = {
-    'react-dom': '@hot-loader/react-dom'
+    '@': path.resolve(__dirname, '../client/'),
+    'react-dom': '@hot-loader/react-dom',
+  }
+  config.performance = {
+    hints: false
   }
 }
 

@@ -7,6 +7,11 @@ module.exports = webpackMerge(baseConfig, {
   entry: {
     app: path.join(__dirname, '../client/server-entry.tsx')
   },
+  resolve: {
+    alias: {
+      '@': path.resolve(__dirname, '../client/'),
+    }
+  },
   externals: Object.keys(require('../package.json').dependencies),
   output: {
     filename: 'server-entry.js',
@@ -14,7 +19,4 @@ module.exports = webpackMerge(baseConfig, {
     publicPath: '/',
     libraryTarget: 'commonjs2'
   },
-  resolve: {
-    extensions: ['.ts', '.tsx', '.js']
-  }
 })

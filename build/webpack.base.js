@@ -1,19 +1,22 @@
-const path = require('path')
+const { resolve } = require('path')
+const webpack = require('webpack')
 
-let mode = 'production'
-if (process.env.NODE_ENV === 'development') {
-  mode = 'development'
-}
+let isDev = process.env.NODE_ENV === 'development'
 
 module.exports = {
-  mode,
+  mode: isDev ? 'development': 'production',
+  resolve: {
+    alias: {
+      '@': resolve(__dirname, '../client/'),
+    }
+  },
   module: {
     rules: [
       {
         enforce: 'pre',
         test:  /\.tsx?$/,
         exclude: [
-          path.resolve(__dirname, '../node_modules')
+          resolve(__dirname, '../node_modules')
         ]
       },
       {
@@ -22,5 +25,13 @@ module.exports = {
         exclude: /node_modules/
       },
     ]
-  }
+  },
+  resolve: {
+    extensions: ['.ts', '.tsx', '.js']
+  },
+  plugins: [new webpack.DefinePlugin({
+    'process.env': {
+      'NODE_ENV':  isDev ? '"development"': '"production"'
+    }
+  })]
 }

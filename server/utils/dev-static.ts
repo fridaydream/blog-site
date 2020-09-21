@@ -27,7 +27,7 @@ const getModuleFromString = (bundle: string, filename: string) => {
 
 const getTemplate = () => {
   return new Promise((resolve, reject) => {
-    axios.get('http://localhost:8888/public/index.html')
+    axios.get('http://localhost:8888/public/server.ejs')
     .then(res => {
       resolve(res.data)
     })
@@ -61,6 +61,9 @@ serverCompiler.watch({}, (err, stats: webpack.Stats) => {
 })
 
 export default function (app: Koa) {
+  app.use(bodyparser({
+    enableTypes: ['json', 'form', 'text']
+  }))
   const options = {
     targets: {
       // (.*) means anything
@@ -71,16 +74,15 @@ export default function (app: Koa) {
     }
   }
   app.use(koa2proxymiddleware(options));
-  app.use(bodyparser({
-    enableTypes: ['json', 'form', 'text']
-  }))
-  app.use(async (ctx: Koa.Context) => {
+  app.use(async (ctx: Koa.Context, next) => {
     if (!serverBundle) {
       ctx.body = 'waiting for compile, refresh later'
       return
     }
     let template = await getTemplate()
     // @ts-ignore
-    serverRender(serverBundle, template, ctx)
+    const html = await serverRender(serverBundle, template, ctx)
+    ctx.body = html
+    await next()
   });
 }
