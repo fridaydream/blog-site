@@ -1,18 +1,11 @@
 import { observable, action, toJS } from 'mobx'
 
 export default class ThemeStore {
-  constructor({ theme = '' } = {}) {
-    if (typeof window !== 'undefined') { // eslint-disable-line
-      console.log('data', theme);
-      this.theme = theme
-    }
-  }
-
-  @observable theme: string | undefined
+  @observable theme = 'light'
 
   @action
-  setThemeColor(theme: string) {
-    this.theme = theme
+  setTheme(newTheme: string) {
+    this.theme = newTheme
   }
 
   toJson() {

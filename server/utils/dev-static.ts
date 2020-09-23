@@ -82,7 +82,8 @@ export default function (app: Koa) {
     let template = await getTemplate()
     // @ts-ignore
     const html = await serverRender(serverBundle, template, ctx)
-    ctx.body = html
-    await next()
+    if (html) {
+      ctx.body = html
+    }
   });
 }

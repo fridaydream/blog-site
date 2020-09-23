@@ -5,7 +5,6 @@ import ejs from 'ejs'
 import serialize from 'serialize-javascript'
 import Helmet from 'react-helmet'
 import { IStores } from '../../client/store/types';
-import { nextTick } from 'process'
 
 interface RouterContext {
   url?: string;
@@ -17,7 +16,7 @@ interface Bundle {
 }
 
 function sleep(ms: number) {
-  return new Promise((resolve, reject) => {
+  return new Promise((resolve) => {
     setTimeout(resolve, ms)
   })
 }
@@ -33,13 +32,12 @@ const getStoreState = (stores: { [x: string]: { toJson: () => any } }) => {
 export default async (bundle: Bundle, template: string, ctx: Koa.Context, next: () => any) => {
   const createStoreMap = bundle.createStoreMap
   const stores: IStores = createStoreMap()
+  await sleep(1000)
+  stores.themeStore.theme = 'dark'
   const createApp = bundle.default
   const routerContext: RouterContext = {}
   // @ts-ignore
   const app = createApp(stores, routerContext, ctx.url)
-  await sleep(1000)
-  console.log('after 1000')
-  stores.themeStore.theme = 'dark';
   const content = ReactDomServer.renderToString(app)
   if (routerContext.url) {
     ctx.redirect(routerContext.url);

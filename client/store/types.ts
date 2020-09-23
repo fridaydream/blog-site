@@ -15,7 +15,7 @@ export interface ICounterStore {
 
 export interface IThemeStore {
   theme: string;
-  setThemeColor: () => void;
+  setTheme: () => void;
   toJson: () => IThemeType;
 }
 
