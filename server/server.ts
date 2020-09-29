@@ -17,10 +17,11 @@ if (!isDev) {
   const serverEntry = require('../dist/server-entry')
   let template = fs.readFileSync(path.join(__dirname, '../dist/server.ejs'), 'utf8')
   app.use(async (ctx, next) => {
-    // @ts-ignore
-    serverRender(serverEntry, template, ctx)
+    ctx.template = template;
+    ctx.serverBundle = serverEntry;
     await next()
   });
+  app.use(serverRender);
   app.use(koaStaticPlus(path.join(__dirname, '../dist'), {
     pathPrefix: '/public/'  //路径前缀
   }))

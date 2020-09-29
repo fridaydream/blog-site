@@ -4,16 +4,7 @@ import ReactDomServer from 'react-dom/server'
 import ejs from 'ejs'
 import serialize from 'serialize-javascript'
 import Helmet from 'react-helmet'
-import { IStores } from '../../client/store/types';
-
-interface RouterContext {
-  url?: string;
-}
-
-interface Bundle {
-  default: (routerContext: object, url: string) => any
-  createStoreMap: () => IStores;
-}
+import { IStores, RouterContext } from '../types';
 
 function sleep(ms: number) {
   return new Promise((resolve) => {
@@ -21,7 +12,7 @@ function sleep(ms: number) {
   })
 }
 
-const getStoreState = (stores: { [x: string]: { toJson: () => any } }) => {
+const getStoreState = (stores: IStores) => {
   return Object.keys(stores).reduce((result, storeName) => {
     // @ts-ignore
     result[storeName] = stores[storeName].toJson()
@@ -29,12 +20,14 @@ const getStoreState = (stores: { [x: string]: { toJson: () => any } }) => {
   }, {})
 }
 
-export default async (bundle: Bundle, template: string, ctx: Koa.Context, next: () => any) => {
-  const createStoreMap = bundle.createStoreMap
+export default async (ctx: Koa.Context, next: () => void) => {
+  const serverBundle = ctx.serverBundle;
+  const template = ctx.template;
+  const createStoreMap = serverBundle.createStoreMap
   const stores: IStores = createStoreMap()
   await sleep(1000)
   stores.themeStore.theme = 'dark'
-  const createApp = bundle.default
+  const createApp = serverBundle.default
   const routerContext: RouterContext = {}
   // @ts-ignore
   const app = createApp(stores, routerContext, ctx.url)
@@ -44,8 +37,8 @@ export default async (bundle: Bundle, template: string, ctx: Koa.Context, next: 
     return;
   }
   const helmet = Helmet.rewind()
-  // @ts-ignore
   const state = getStoreState(stores)
+  console.log('state', state);
   const html = ejs.render(template, {
     appString: content,
     initialState: serialize(state),
@@ -55,5 +48,6 @@ export default async (bundle: Bundle, template: string, ctx: Koa.Context, next: 
     link: helmet.link.toString(),
     // materialCss: sheetsRegistry.toString()
   })
-  return html;
+  ctx.body = html;
+  await next();
 }

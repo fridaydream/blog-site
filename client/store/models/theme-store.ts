@@ -1,7 +1,11 @@
 import { observable, action, toJS } from 'mobx'
 
 export default class ThemeStore {
-  @observable theme = 'light'
+  constructor({ theme } = { theme: 'light' }) {
+    this.theme = theme;
+  }
+
+  @observable theme
 
   @action
   setTheme(newTheme: string) {

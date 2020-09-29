@@ -1,3 +1,4 @@
+
 interface ICounterServer {
   count: number;
 }
@@ -22,4 +23,12 @@ export interface IThemeStore {
 export interface IStores {
   counterStore: ICounterStore;
   themeStore: IThemeStore;
+}
+
+export type IStoresKey = 'counterStore' | 'themeStore'
+
+declare global {
+  interface Window {
+    __INITIAL__STATE__: IStores;
+  }
 }

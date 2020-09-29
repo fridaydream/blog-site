@@ -24,7 +24,6 @@ const getModuleFromString = (bundle: string, filename: string) => {
   return m
 }
 
-
 const getTemplate = () => {
   return new Promise((resolve, reject) => {
     axios.get('http://localhost:8888/public/server.ejs')
@@ -38,7 +37,6 @@ const getTemplate = () => {
 const mfs = new MemoryFs;
 const serverCompiler = webpack(serverConfig);
 serverCompiler.outputFileSystem = mfs
-// @ts-ignore
 let serverBundle: React.FC;
 serverCompiler.watch({}, (err, stats: webpack.Stats) => {
   if (err) throw err
@@ -53,7 +51,6 @@ serverCompiler.watch({}, (err, stats: webpack.Stats) => {
     serverConfig.output.filename
   )
   const bundle = mfs.readFileSync(bundlePath, 'utf-8')
-  // @ts-ignore
   const m = getModuleFromString(bundle, 'server-entry.js')
   // 下面这个m.exports.default和热更新有关联，改变了webpack public中/public =》 /public/之后需要加 default
   // @ts-ignore
@@ -80,10 +77,9 @@ export default function (app: Koa) {
       return
     }
     let template = await getTemplate()
-    // @ts-ignore
-    const html = await serverRender(serverBundle, template, ctx)
-    if (html) {
-      ctx.body = html
-    }
+    ctx.template = template;
+    ctx.serverBundle = serverBundle;
+    await next();
   });
+  app.use(serverRender);
 }
