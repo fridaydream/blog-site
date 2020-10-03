@@ -4,6 +4,9 @@ import ReactDomServer from 'react-dom/server'
 import ejs from 'ejs'
 import serialize from 'serialize-javascript'
 import Helmet from 'react-helmet'
+import { createGenerateClassName } from '@material-ui/core/styles';
+import { create, SheetsRegistry } from 'jss';
+import jssPreset from 'jss-preset-default';
 import { IStores, RouterContext } from '../types';
 
 function sleep(ms: number) {
@@ -29,8 +32,16 @@ export default async (ctx: Koa.Context, next: () => void) => {
   stores.themeStore.theme = 'dark'
   const createApp = serverBundle.default
   const routerContext: RouterContext = {}
-  // @ts-ignore
-  const app = createApp(stores, routerContext, ctx.url)
+  const sheetsManager = new Map();
+  const sheetsRegistry = new SheetsRegistry();
+  const jss = create({
+    ...jssPreset(),
+    // We define a custom insertion point that JSS will look for injecting the styles in the DOM.
+    // insertionPoint: 'jss-insertion-point',
+  });
+  const generateClassName = createGenerateClassName();
+
+  const app = createApp(stores, sheetsRegistry, sheetsManager, jss, generateClassName, routerContext, ctx.url)
   const content = ReactDomServer.renderToString(app)
   if (routerContext.url) {
     ctx.redirect(routerContext.url);
@@ -38,7 +49,6 @@ export default async (ctx: Koa.Context, next: () => void) => {
   }
   const helmet = Helmet.rewind()
   const state = getStoreState(stores)
-  console.log('state', state);
   const html = ejs.render(template, {
     appString: content,
     initialState: serialize(state),
@@ -46,7 +56,7 @@ export default async (ctx: Koa.Context, next: () => void) => {
     title: helmet.title.toString(),
     style: helmet.style.toString(),
     link: helmet.link.toString(),
-    // materialCss: sheetsRegistry.toString()
+    materialCss: sheetsRegistry.toString()
   })
   ctx.body = html;
   await next();
