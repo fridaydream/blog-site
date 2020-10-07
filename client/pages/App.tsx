@@ -1,10 +1,7 @@
 import React from 'react'
 import { hot } from 'react-hot-loader/root'
 import { Link } from 'react-router-dom'
-// import { observer } from 'mobx-react-lite'
 import Routes from '@/config/router'
-
-
 
 const App = () => {
   return (

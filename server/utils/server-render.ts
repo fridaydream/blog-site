@@ -7,6 +7,7 @@ import Helmet from 'react-helmet'
 import { createGenerateClassName } from '@material-ui/core/styles';
 import { create, SheetsRegistry } from 'jss';
 import jssPreset from 'jss-preset-default';
+
 import { IStores, RouterContext } from '../types';
 
 function sleep(ms: number) {
@@ -16,11 +17,10 @@ function sleep(ms: number) {
 }
 
 const getStoreState = (stores: IStores) => {
-  return Object.keys(stores).reduce((result, storeName) => {
-    // @ts-ignore
+  return (Object.keys(stores) as Array<keyof typeof stores>).reduce((result, storeName) => {
     result[storeName] = stores[storeName].toJson()
     return result
-  }, {})
+  }, {} as ({[key in keyof typeof stores]: any}))
 }
 
 export default async (ctx: Koa.Context, next: () => void) => {
@@ -28,8 +28,8 @@ export default async (ctx: Koa.Context, next: () => void) => {
   const template = ctx.template;
   const createStoreMap = serverBundle.createStoreMap
   const stores: IStores = createStoreMap()
-  await sleep(1000)
-  stores.themeStore.theme = 'dark'
+
+  // stores.themeStore.theme = 'dark'
   const createApp = serverBundle.default
   const routerContext: RouterContext = {}
   const sheetsManager = new Map();
@@ -40,8 +40,8 @@ export default async (ctx: Koa.Context, next: () => void) => {
     // insertionPoint: 'jss-insertion-point',
   });
   const generateClassName = createGenerateClassName();
-
-  const app = createApp(stores, sheetsRegistry, sheetsManager, jss, generateClassName, routerContext, ctx.url)
+  ctx.stores = stores;
+  const app = await createApp(stores, sheetsRegistry, sheetsManager, jss, generateClassName, routerContext, ctx)
   const content = ReactDomServer.renderToString(app)
   if (routerContext.url) {
     ctx.redirect(routerContext.url);

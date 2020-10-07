@@ -32,6 +32,7 @@ module.exports = {
     '@typescript-eslint/explicit-module-boundary-types': [0],
     'react/display-name': [0],
     'prettier/prettier': [0],
-    '@typescript-eslint/no-non-null-assertion': [0]
+    '@typescript-eslint/no-non-null-assertion': [0],
+    '@typescript-eslint/no-misused-new': [0]
   },
 }

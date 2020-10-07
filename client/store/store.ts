@@ -1,7 +1,6 @@
 import React from 'react'
 import CounterStore from './models/counter-store'
 import ThemeStore from './models/theme-store'
-// import { IStores, IStoresKey } from './types'
 
 export {
   CounterStore,

@@ -10,8 +10,10 @@ module.exports = webpackMerge(baseConfig, {
   resolve: {
     alias: {
       '@': path.resolve(__dirname, '../client/'),
-    }
+    },
+    extensions: ['.ts', '.tsx', '.js', 'jsx']
   },
+
   externals: Object.keys(require('../package.json').dependencies),
   output: {
     filename: 'server-entry.js',

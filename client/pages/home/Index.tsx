@@ -6,7 +6,7 @@ import { makeStyles } from '@material-ui/core/styles';
 
 import {
   useStores,
-} from '@/store/use-stores'
+} from '../../store/use-stores'
 
 const useStyles = makeStyles({
   root: {
@@ -20,7 +20,7 @@ const useStyles = makeStyles({
   },
 });
 
-export const Home = () => {
+const Home = () => {
   const { themeStore } = useStores()
   const classes = useStyles();
 
@@ -36,9 +36,33 @@ export const Home = () => {
       <button onClick={() => themeStore.setTheme('dark')}>
         set theme: dark
       </button>
+      <ul>
+        {
+          themeStore.news.map((item) => (
+            <li key={item.id}>
+              {item.title}
+            </li>
+            )
+          )
+        }
+      </ul>
       <Button className={classes.root}>Default</Button>
     </>
   )
+}
+
+interface Stores {
+  themeStore: {
+    getData: () => void
+  }
+}
+
+interface HomeProps {
+  stores: Stores;
+}
+
+Home.getInitialProps = async ({ stores }: HomeProps) => {
+  return stores.themeStore.getData()
 }
 
 export default observer(Home)

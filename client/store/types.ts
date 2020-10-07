@@ -1,5 +1,5 @@
 
-interface ICounterServer {
+interface ICounterType {
   count: number;
 }
 
@@ -11,21 +11,35 @@ export interface ICounterStore {
   count: number;
   increment: () => void;
   decrement: () => void;
-  toJson: () => ICounterServer;
+  toJson: () => ICounterType;
+}
+
+
+export type IStoresKey = 'counterStore' | 'themeStore'
+
+
+export interface NewsItem {
+  id: string;
+  title: string;
+}
+
+export interface IThemeStoreProps {
+  theme: string;
+  news: NewsItem[];
 }
 
 export interface IThemeStore {
   theme: string;
-  setTheme: () => void;
-  toJson: () => IThemeType;
+  news: NewsItem[];
+  setTheme(str: string): void;
+  getData(): Promise<NewsItem[]>;
+  toJson(): IThemeStoreProps;
 }
 
 export interface IStores {
   counterStore: ICounterStore;
   themeStore: IThemeStore;
 }
-
-export type IStoresKey = 'counterStore' | 'themeStore'
 
 declare global {
   interface Window {
