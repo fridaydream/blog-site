@@ -1,7 +1,7 @@
 import React from 'react'
 
 export interface FC extends React.FC {
-  getInitialProps?: (params: any) => Promise<any>
+  getInitialProps?: (params: any) => Promise<void>
   Layout?: React.FC
   preload?: () => Promise<Preload>
 }

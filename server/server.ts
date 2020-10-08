@@ -1,8 +1,7 @@
 import Koa from 'koa'
 import fs from 'fs'
 import path from 'path'
-// @ts-ignore
-import koaStaticPlus from 'koa-static-plus'
+import send from 'koa-send'
 // import favicon from 'koa-favicon'
 import serverRender from './utils/server-render'
 
@@ -22,9 +21,17 @@ if (!isDev) {
     await next()
   });
   app.use(serverRender);
-  app.use(koaStaticPlus(path.join(__dirname, '../dist'), {
-    pathPrefix: '/public/'  //路径前缀
-  }))
+  app.use(async (ctx, next) => {
+    if ((ctx.method === 'HEAD' || ctx.method === 'GET') && ctx.path.indexOf('/public/') === 0) {
+      ctx.path = ctx.path.slice('/public/'.length);
+      console.log('ctx.path', ctx.path);
+      await send(ctx, ctx.path, {
+        index: 'index.html',
+        root: path.join(__dirname, '../dist')
+      })
+    }
+    await next()
+  })
 } else {
   const devStatic = require('./utils/dev-static').default
   devStatic(app)
